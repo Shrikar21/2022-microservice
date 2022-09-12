@@ -1,0 +1,8 @@
+-- discovery-client
+http://localhost:8761/
+eureka / password
+-- key-cloak
+http://localhost:8181
+admin / admin
+-- Zipkin
+http://localhost:9411
