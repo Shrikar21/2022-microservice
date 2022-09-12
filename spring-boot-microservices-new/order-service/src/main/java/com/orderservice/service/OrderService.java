@@ -1,5 +1,6 @@
 package com.orderservice.service;
 
+import com.orderservice.event.OrderPlacedEvent;
 import com.orderservice.repository.OrderRepository;
 import com.orderservice.dto.InventoryResponse;
 import com.orderservice.dto.OrderDto;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,8 @@ public class OrderService {
     private final WebClient.Builder webClientBuilder;
     private final Tracer tracer;
     private final StreamBridge streamBridge;
+
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -67,7 +71,7 @@ public class OrderService {
 
             if (allProductsInStock) {
                 orderRepository.save(order);
-
+                kafkaTemplate.send("notification-topic", new OrderPlacedEvent(order.getOrderNumber())) ;
                 streamBridge.send("notificationEventSupplier-out-0",
                         MessageBuilder.withPayload(new OrderDto(order.getOrderNumber())).build());
                 return "Order Placed Successfully";

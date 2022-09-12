@@ -1,4 +1,4 @@
-package com.programming.techie.notificationservice;
+package com.notificationservice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class OrderPlacedEvent {
     private String orderNumber;
 }
