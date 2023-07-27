@@ -2,6 +2,7 @@ package com.discoveryserver.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,14 +13,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${app.eureka.username}")
     private String username;
+
     @Value("${app.eureka.password}")
     private String password;
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.inMemoryAuthentication()
                 .passwordEncoder(NoOpPasswordEncoder.getInstance())
-                .withUser(username).password(password)
+                .withUser(username)
+                .password(password)
                 .authorities("USER");
     }
 
